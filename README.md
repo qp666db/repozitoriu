@@ -2,7 +2,7 @@
 # Мой учебный репозиторий
 
 ## Содержание
-- [Домашние задания](./Course1/homeworks/)
+- [Домашние задания]([./Course1/homeworks/](https://github.com/qp666db/repozitoriu/tree/master/course-1/home%20work))
 - [Практики](./Course1/practices/)
 - [Проекты](./Course1/projects/)
 
