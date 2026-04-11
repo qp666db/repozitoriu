@@ -1,148 +1,146 @@
 ﻿using System;
 
-namespace  balabolka;
-    public abstract class Shape
+namespace InterfacesDemo
+{
+    public interface IPlayable
     {
-        public abstract string Name { get; }
-        public abstract double GetArea();
-        public void Print() => Console.WriteLine($"{Name}: площадь = {GetArea():F2}");
+        void Play();
     }
 
-    public class Circle : Shape
+    public class Guitar : IPlayable
     {
-        public double Radius { get; set; }
-        public override string Name => "Круг";
-        public override double GetArea() => Math.PI * Math.Pow(Radius, 2);
-    }
-
-    public class Rectangle : Shape
-    {
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public override string Name => "Прямоугольник";
-        public override double GetArea() => Width * Height;
-    }
-
-
-    public abstract class Animal
-    {
-        public string Name { get; set; }
-        public Animal(string name)
+        public void Play()
         {
-            Name = name;
-            Console.WriteLine($"Создано животное: {Name}");
+            Console.WriteLine("Гитара играет аккорды");
         }
-        public void Eat() => Console.WriteLine($"{Name} ест.");
-        public abstract void MakeSound();
     }
 
-    public class Dog : Animal
+    public class Piano : IPlayable
     {
-        public Dog(string name) : base(name) { }
-        public override void MakeSound() => Console.WriteLine($"{Name}: Гав-гав!");
-    }
-
-    public class Cat : Animal
-    {
-        public Cat(string name) : base(name) { }
-        public override void MakeSound() => Console.WriteLine($"{Name}: Мяу!");
-    }
-
-
-    public abstract class Transport
-    {
-        public void Move()
+        public void Play()
         {
-            Start();
-            MoveCore();
-            Stop();
+            Console.WriteLine("Пианино играет ноты");
         }
-        protected void Start() => Console.WriteLine("Старт");
-        protected void Stop() => Console.WriteLine("Стоп");
-        protected abstract void MoveCore();
     }
 
-    public class Car : Transport
+    public class Drum : IPlayable
     {
-        protected override void MoveCore() => Console.WriteLine("Машина едет по дороге");
-    }
-
-    public class Boat : Transport
-    {
-        protected override void MoveCore() => Console.WriteLine("Лодка плывёт по воде");
+        public void Play()
+        {
+            Console.WriteLine("Барабан бьет ритм");
+        }
     }
 
 
-    public abstract class DocumentExporter
+    public interface IReadable
     {
-        public abstract string FormatName { get; }
-        public abstract void Export(string content);
-        public void ShowInfo(string content)
+        void Read(string filename);
+    }
+
+    public interface IWritable
+    {
+        void Write(string filename, string content);
+    }
+
+    public interface ISavable
+    {
+        void Save();
+    }
+
+    public class TextDocument : IReadable, IWritable, ISavable
+    {
+        private string content;
+
+        public void Read(string filename)
+        {
+            Console.WriteLine($"Чтение из файла {filename}");
+            content = "Текст из файла";
+        }
+
+        public void Write(string filename, string content)
+        {
+            Console.WriteLine($"Запись в файл {filename}: {content}");
+            this.content = content;
+        }
+
+        public void Save()
+        {
+            Console.WriteLine($"Файл сохранен. Содержимое: {content}");
+        }
+    }
+
+
+    public interface IDocumentExporter
+    {
+        string FormatName { get; }
+        void Export(string content);
+
+        void ShowInfo(string content)
         {
             Console.WriteLine($"Экспорт в формат {FormatName}: {content}");
         }
     }
 
-    public class TxtExporter : DocumentExporter
+
+    public class TxtExporter : IDocumentExporter
     {
-        public override string FormatName => "TXT";
-        public override void Export(string content) => Console.WriteLine("Сохраняем текстовый файл");
+        public string FormatName => "TXT";
+
+        public void Export(string content)
+        {
+            Console.WriteLine("Сохраняем текстовый файл.");
+        }
     }
 
-    public class PdfExporter : DocumentExporter
+    public class PdfExporter : IDocumentExporter
     {
-        public override string FormatName => "PDF";
-        public override void Export(string content) => Console.WriteLine("Создаём PDF-документ");
+        public string FormatName => "PDF";
+
+        public void Export(string content)
+        {
+            Console.WriteLine("Создаtм PDF-документ.");
+        }
     }
 
- 
+
     class Program
     {
         static void Main(string[] args)
         {
-            
-            Console.WriteLine("\nЗАДАНИЕ 1");
-            Shape[] shapes = {
-                new Circle { Radius = 5 },
-                new Rectangle { Width = 4, Height = 10 }
+            Console.WriteLine("Задание 1");
+            IPlayable[] instruments =
+            {
+                new Guitar(),
+                new Piano(),
+                new Drum()
             };
-            foreach (var s in shapes) s.Print();
 
-            
-            Console.WriteLine("\nЗАДАНИЕ 2");
-            Animal[] animals = {
-                new Dog("Рекс"),
-                new Cat("Мурка")
-            };
-            foreach
-(var a in animals) 
-            { 
-                a.Eat();
-a.MakeSound(); 
+            foreach (var instrument in instruments)
+            {
+                instrument.Play();
             }
 
-            
-            Console.WriteLine("\nЗАДАНИЕ 3");
-Transport[] transports = {
-                new Car(),
-                new Boat()
-            };
-foreach (var t in transports)
-{
-    t.Move();
-}
+            Console.WriteLine("Задание 2");
+            TextDocument doc = new TextDocument();
+            doc.Read("data.txt");
+            doc.Write("data.txt", "Привет, мир!");
+            doc.Save();
 
-
-Console.WriteLine("\nЗАДАНИЕ 4");
-DocumentExporter[] exporters = {
+            Console.WriteLine("Задание 3");
+            IDocumentExporter[] exporters =
+            {
                 new TxtExporter(),
                 new PdfExporter()
             };
-foreach (var e in exporters)
-{
-    e.ShowInfo("Hello world!");
-    e.Export("Hello world!");
-}
 
+            foreach (var exporter in exporters)
+            {
+                exporter.ShowInfo("Hello World!");
+                exporter.Export("Hello World!");
+
+            }
         }
     }
+}
+
+
