@@ -1,0 +1,83 @@
+using System;
+using System.IO;
+
+Console.WriteLine(" Задание 1 ");
+string filePath = "notes.txt";
+
+
+File.WriteAllLines(filePath, new[] { "Первая строка", "Вторая строка", "Третья строка" });
+File.AppendAllText(filePath, "Четвертая строка (добавленная)" + Environment.NewLine);
+
+
+Console.WriteLine("Содержимое файла:");
+Console.WriteLine(File.ReadAllText(filePath));
+
+
+Console.Write("Удалить файл? (y/n): ");
+if (Console.ReadLine()?.ToLower() == "y")
+{
+    File.Delete(filePath);
+    Console.WriteLine("Файл удален.");
+}
+
+
+Console.WriteLine("\n Задание 2 ");
+string dirPath = "data";
+Directory.CreateDirectory(dirPath); 
+
+File.WriteAllText(Path.Combine(dirPath, "test1.txt"), "Hello World");
+File.WriteAllText(Path.Combine(dirPath, "test2.txt"), "C# Programming");
+if (Directory.Exists(dirPath))
+{
+    string[] files = Directory.GetFiles(dirPath, "*.txt");
+    foreach (var f in files)
+    {
+        FileInfo info = new FileInfo(f);
+        Console.WriteLine($"{info.Name} — {info.Length} байт");
+    }
+}
+
+Console.WriteLine("\n Задание 3 ");
+Console.Write("Введите путь к файлу для бэкапа: ");
+string? src = Console.ReadLine();
+
+if (!string.IsNullOrWhiteSpace(src) && File.Exists(src))
+{
+    string dir = Path.GetDirectoryName(src) ?? "";
+    string name = Path.GetFileName(src);
+    string bak = Path.Combine(dir, name + ".bak");
+    File.Copy(src, bak, overwrite: true);
+    Console.WriteLine($"Создана копия: {bak}");
+}
+else
+{
+    Console.WriteLine("Файл не найден.");
+}
+
+NewMethod();
+string logsDir = "logs";
+Directory.CreateDirectory(logsDir);
+
+
+string logFileName = DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+string logPath = Path.Combine(logsDir, logFileName);
+string logEntry = $"[{DateTime.Now:HH:mm:ss}] Программа запущена" + Environment.NewLine;
+File.AppendAllText(logPath, logEntry);
+Console.WriteLine($"Запись добавлена в {logFileName}");
+
+int days = 7;
+int deletedCount = 0;
+foreach (var f in Directory.GetFiles(logsDir, "*.log"))
+{
+    var info = new FileInfo(f);
+    if (info.CreationTimeUtc < DateTime.UtcNow.AddDays(-days))
+    {
+        info.Delete();
+        deletedCount++;
+    }
+}
+Console.WriteLine($"Удалено старых логов: {deletedCount}");
+
+static void NewMethod()
+{
+    Console.WriteLine("\n Задание 4 ");
