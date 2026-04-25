@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace LibraryApp
 {
-    //1 задание (zov)
+    //1 задание 
     public class Book
     {
         [JsonPropertyName("title")]
