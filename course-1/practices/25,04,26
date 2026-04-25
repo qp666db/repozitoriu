@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace LibraryApp
+{
+    //1 задание (zov)
+    public class Book
+    {
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+        [JsonPropertyName("author")]
+        public string Author { get; set; }
+        [JsonPropertyName("publication_year")]
+        public int Year { get; set; }
+    }
+    // 2 '''''''''''''''''''''''
+    public class Library
+    {
+        [JsonPropertyName("library_name")]
+        public string Name { get; set; }
+        [JsonPropertyName("books_list")]
+        public List<Book> Books { get; set; }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            // 1. львы
+            var books = new List<Book>
+            {
+                new Book { Title = "Война и мир", Author = "Толстой", Year = 1869 },
+                new Book { Title = "Преступление и наказание", Author = "Достоевский", Year = 1866 }
+            };
+
+            // 2. Библиотека
+            var myLibrary = new Library
+            {
+                Name = "Библиотека",
+                Books = books
+            };
+
+            
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize(myLibrary, options);
+            File.WriteAllText("library.json", jsonString);
+
+            // 4.файла
+            string jsonFromFile = File.ReadAllText("library.json");
+            Library deserializedLibrary = JsonSerializer.Deserialize<Library>(jsonFromFile);
+
+            // экран
+            Console.WriteLine($"Название библиотеки: {deserializedLibrary.Name}");
+            foreach (var book in deserializedLibrary.Books)
+            {
+                Console.WriteLine($"Название: {book.Title}, Автор: {book.Author}, Год: {book.Year}");
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
